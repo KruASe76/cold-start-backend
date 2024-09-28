@@ -21,6 +21,7 @@ class Video(BaseModel):
 class InteractionType(StrEnum):
     LIKE = "like"
     DISLIKE = "dislike"
+    NONE = "none"
 
 
 class Interaction(BaseModel):

@@ -12,7 +12,7 @@ Web API wrapper for the module - backend part
 
 ## Run by yourself
 
-### Python package is available at [PyPI](https://pypi.org/project/cold-start)
+### Python package is available at [PyPI](https://pypi.org/project/rutube-cold-start)
 
 ### Docker Compose
 

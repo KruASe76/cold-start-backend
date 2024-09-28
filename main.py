@@ -72,6 +72,8 @@ async def recommendations(
     recommended_videos = await crud.get_videos(db, recommended_video_ids)
 
     for video in recommended_videos:
-        video.description = f"{video.description[:MAX_DESCRIPTION_LENGTH]}..."
+        video.description = video.description[:MAX_DESCRIPTION_LENGTH] + (
+            "..." if len(video.description.strip()) > MAX_DESCRIPTION_LENGTH else ""
+        )
 
     return recommended_videos
