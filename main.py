@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI) -> AbstractAsyncContextManager[None]:
 
 
 async def get_db() -> AsyncSession:
-    async with async_session() as session:
+    async with async_session(expire_on_commit=False) as session:
         try:
             yield session
         finally:
