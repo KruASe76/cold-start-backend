@@ -1,17 +1,14 @@
 from typing import Sequence
 from uuid import UUID
 
-from sqlalchemy import select, Row
+from sqlalchemy import select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.util import win32
 
 from misc import models, schemas
 
 
-async def get_videos(
-    db: AsyncSession, video_ids: list[UUID]
-) -> Sequence[models.Video]:
+async def get_videos(db: AsyncSession, video_ids: list[UUID]) -> Sequence[models.Video]:
     statement = select(models.Video).filter(models.Video.id.in_(map(str, video_ids)))
 
     result = await db.execute(statement)
@@ -19,21 +16,29 @@ async def get_videos(
     return result.scalars().all()
 
 
-async def insert_interaction(
-    db: AsyncSession, interaction: schemas.Interaction
-) -> models.Interaction:
-    db_interaction = models.Interaction(**interaction.model_dump())
-
-    statement = insert(models.Interaction).values(**interaction.model_dump())
-    statement = statement.on_conflict_do_update(
-        index_elements=[models.Interaction.user_id, models.Interaction.video_id],
-        set_={"type": statement.excluded.type},
+async def insert_default_interactions(
+    db: AsyncSession, user_id: UUID, video_ids: list[UUID]
+) -> None:
+    statement = insert(models.Interaction).values(
+        [models.Interaction(user_id=user_id, video_id=video_id) for video_id in video_ids]
     )
 
     await db.execute(statement)
     await db.commit()
 
-    return db_interaction
+
+async def update_interaction(db: AsyncSession, interaction: schemas.Interaction) -> None:
+    statement = (
+        update(models.Interaction)
+        .where(
+            models.Interaction.user_id == interaction.user_id,
+            models.Interaction.video_id == interaction.video_id,
+        )
+        .values(type=interaction.type.as_int())
+    )
+
+    await db.execute(statement)
+    await db.commit()
 
 
 async def get_user_interactions(db: AsyncSession, user_id: UUID) -> Sequence[models.Interaction]:

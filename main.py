@@ -2,7 +2,7 @@ import random
 from contextlib import asynccontextmanager, AbstractAsyncContextManager
 from uuid import UUID
 
-from fastapi import FastAPI, Body, Query, Depends
+from fastapi import FastAPI, Body, Query, Depends, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -44,21 +44,24 @@ app.add_middleware(
 )
 
 
+router = APIRouter()
+
+
 @app.get("/")
 async def index() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.put("/api/v1/interaction", response_model=schemas.Interaction)
+@router.put("/interaction", response_model=schemas.Interaction)
 async def interaction(
     interaction: schemas.Interaction = Body(), db: AsyncSession = Depends(get_db)
 ):
-    await crud.insert_interaction(db, interaction)
+    await crud.update_interaction(db, interaction)
 
     return interaction
 
 
-@app.post("/api/v1/recommendations", response_model=list[schemas.Video])
+@router.post("/recommendations", response_model=list[schemas.Video])
 async def recommendations(
     user_id: UUID = Body(embed=True),
     limit: int = Query(default=10, ge=0),
@@ -70,6 +73,7 @@ async def recommendations(
     recommended_video_ids = random.sample(all_ids, limit)
 
     recommended_videos = await crud.get_videos(db, recommended_video_ids)
+    await crud.insert_default_interactions(db, user_id, recommended_video_ids)
 
     for video in recommended_videos:
         video.description = video.description[:MAX_DESCRIPTION_LENGTH] + (
@@ -77,3 +81,6 @@ async def recommendations(
         )
 
     return recommended_videos
+
+
+app.include_router(router, prefix="/api/v1")

@@ -21,4 +21,4 @@ class Interaction(Base):
 
     user_id = mapped_column(Uuid, primary_key=True)
     video_id = mapped_column(Uuid, primary_key=True)
-    type = mapped_column(String)
+    type = mapped_column(Integer, default=0)

@@ -23,6 +23,15 @@ class InteractionType(StrEnum):
     DISLIKE = "dislike"
     NONE = "none"
 
+    def as_int(self) -> int:
+        _int_map = {
+            self.LIKE: 1,
+            self.DISLIKE: -1,
+            self.NONE: 0,
+        }
+
+        return _int_map[self]
+
 
 class Interaction(BaseModel):
     user_id: UUID
