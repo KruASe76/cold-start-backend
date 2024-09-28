@@ -1,17 +1,21 @@
 from datetime import datetime
 from enum import StrEnum
+from uuid import UUID
 
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel
 
 
 class Video(BaseModel):
-    id: UUID4
+    id: UUID
     publication_datetime: datetime
     duration: float
     year_views: int
     title: str
     description: str
     category: str
+
+    class Config:
+        from_attributes = True
 
 
 class InteractionType(StrEnum):
@@ -20,6 +24,9 @@ class InteractionType(StrEnum):
 
 
 class Interaction(BaseModel):
-    user_id: UUID4
-    video_id: UUID4
+    user_id: UUID
+    video_id: UUID
     type: InteractionType
+
+    class Config:
+        from_attributes = True

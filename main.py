@@ -1,22 +1,32 @@
 import random
 from contextlib import asynccontextmanager, AbstractAsyncContextManager
+from uuid import UUID
 
-from fastapi import FastAPI, Body, Query
+from fastapi import FastAPI, Body, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import UUID4
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from logic.database import Database
-from misc.data_models import Interaction, Video
+from logic import crud
+from logic.database import async_session, create_database, close_database
+from misc import schemas
 
 
 # noinspection PyUnusedLocal
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AbstractAsyncContextManager[None]:
-    await Database.create()
+    await create_database()
 
     yield
 
-    await Database.close()
+    await close_database()
+
+
+async def get_db() -> AsyncSession:
+    async with async_session() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
 
 
 app = FastAPI(lifespan=lifespan)
@@ -38,23 +48,26 @@ async def index() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.put("/api/v1/interaction")
-async def interaction(interaction: Interaction = Body()) -> Interaction:
-    await Database.insert_interaction(interaction)
+@app.put("/api/v1/interaction", response_model=schemas.Interaction)
+async def interaction(
+    interaction: schemas.Interaction = Body(), db: AsyncSession = Depends(get_db)
+):
+    await crud.insert_interaction(db, interaction)
 
     return interaction
 
 
-@app.post("/api/v1/recommendations")
+@app.post("/api/v1/recommendations", response_model=list[schemas.Video])
 async def recommendations(
-    user_id: UUID4 = Body(embed=True),
+    user_id: UUID = Body(embed=True),
     limit: int = Query(default=10, ge=0),
     offset: int = Query(default=0, ge=0),
-) -> list[Video]:
-    all_ids = await Database.REMOVE()
+    db: AsyncSession = Depends(get_db),
+):
+    all_ids = await crud.REMOVE(db)
 
     recommended_video_ids = random.sample(all_ids, limit)
 
-    recommended_videos = await Database.fetch_videos(recommended_video_ids)
+    recommended_videos = await crud.get_videos(db, recommended_video_ids)
 
     return recommended_videos
