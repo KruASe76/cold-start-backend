@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from logic import crud
 from logic.database import async_session, create_database, close_database
 from misc import schemas
+from misc.config import MAX_DESCRIPTION_LENGTH
 
 
 # noinspection PyUnusedLocal
@@ -69,5 +70,8 @@ async def recommendations(
     recommended_video_ids = random.sample(all_ids, limit)
 
     recommended_videos = await crud.get_videos(db, recommended_video_ids)
+
+    for video in recommended_videos:
+        video.description = f"{video.description[:MAX_DESCRIPTION_LENGTH]}..."
 
     return recommended_videos
