@@ -1,10 +1,10 @@
-import random
 from contextlib import asynccontextmanager, AbstractAsyncContextManager
 from uuid import UUID
 
 from fastapi import FastAPI, Body, Query, Depends, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
+from rutube_cold_start import recommend_async
 
 from logic import crud
 from logic.database import async_session, create_database, close_database
@@ -61,6 +61,7 @@ async def interaction(
     return interaction
 
 
+# noinspection PyUnusedLocal
 @router.post("/recommendations", response_model=list[schemas.Video])
 async def recommendations(
     user_id: UUID = Body(embed=True),
@@ -68,9 +69,10 @@ async def recommendations(
     offset: int = Query(default=0, ge=0),
     db: AsyncSession = Depends(get_db),
 ):
-    all_ids = await crud.REMOVE(db)
+    interactions = await crud.get_user_interactions(db, user_id)
+    interaction_history = [(interaction.user_id, interaction.type) for interaction in interactions]
 
-    recommended_video_ids = random.sample(all_ids, limit)
+    recommended_video_ids = await recommend_async(interaction_history, limit)
 
     recommended_videos = await crud.get_videos(db, recommended_video_ids)
     await crud.insert_default_interactions(db, user_id, recommended_video_ids)

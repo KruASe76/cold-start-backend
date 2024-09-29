@@ -7,5 +7,6 @@ requires-python = ">=3.12"
 dependencies = [
     "asyncpg>=0.29.0",
     "fastapi[standard]>=0.115.0",
+    "rutube-cold-start>=1.1.2",
     "sqlalchemy>=2.0.35",
 ]

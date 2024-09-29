@@ -48,11 +48,3 @@ async def get_user_interactions(db: AsyncSession, user_id: UUID) -> Sequence[mod
     result = await db.execute(statement)
 
     return result.scalars().all()
-
-
-async def REMOVE(db: AsyncSession) -> Sequence[UUID]:
-    statement = select(models.Video.id)
-
-    result = await db.execute(statement)
-
-    return result.scalars().all()
