@@ -79,7 +79,7 @@ dependencies = [
 requires-dist = [
     { name = "asyncpg", specifier = ">=0.29.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.0" },
-    { name = "rutube-cold-start", specifier = ">=1.1.2" },
+    { name = "rutube-cold-start", specifier = ">=1.1.5" },
     { name = "sqlalchemy", specifier = ">=2.0.35" },
 ]
 
@@ -614,7 +614,7 @@ wheels = [
 
 [[package]]
 name = "rutube-cold-start"
-version = "1.1.2"
+version = "1.1.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fastparquet" },
@@ -623,9 +623,9 @@ dependencies = [
     { name = "pyarrow" },
     { name = "scikit-learn" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/87/bdc5ef3992ebfac75ad1bed0a4248ff9fd827cb960dc1d268afe948ce07b/rutube_cold_start-1.1.2.tar.gz", hash = "sha256:1ab6952a85f665d9e6d6e9d813bee578cdad3cfdf819921414b69e0d32c167f6", size = 6414 }
+sdist = { url = "https://files.pythonhosted.org/packages/8c/65/422f838b8982d614bcb432628e47fb4db47623e3d0c69908742b30acac7d/rutube_cold_start-1.1.5.tar.gz", hash = "sha256:3d8eeb3d8821e832ae0ac458f1de2a3250323f3b13801cabae9b5e7e472cc2bd", size = 6417 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e5/be/c8b658fa56366f9d14bfdda53eeaf27ddb3ee6b1e1b5d56d120da1c9fd8d/rutube_cold_start-1.1.2-py3-none-any.whl", hash = "sha256:6434bfcf27e0e54e8c2894be0fcbcac24f9293b002223d330e6eea9ce4dbf932", size = 5093 },
+    { url = "https://files.pythonhosted.org/packages/55/44/1ff7fc59528c5d70999f8ebebb44fdd03805efb93761aaf98117d25be5a6/rutube_cold_start-1.1.5-py3-none-any.whl", hash = "sha256:61be910405fa9c69c30702cd25adb1380a28a39276d7b155bdabcf504c17a7a3", size = 5089 },
 ]
 
 [[package]]

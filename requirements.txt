@@ -34,7 +34,7 @@ python-multipart==0.0.10
 pytz==2024.2
 pyyaml==6.0.2
 rich==13.8.1
-rutube-cold-start==1.1.2
+rutube-cold-start==1.1.5
 scikit-learn==1.5.2
 scipy==1.14.1
 shellingham==1.5.4

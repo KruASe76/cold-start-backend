@@ -5,9 +5,7 @@ Web API wrapper for the module - backend part
 ### [Module](https://github.com/digital-fracture/cold-start)
 #### [Documentation](https://digital-fracture.github.io/cold-start)
 
-### [Website](https://card-mu-lyart.vercel.app/)
-
-### [Folder with notebooks and other sources](https://drive.google.com/drive/folders/1_mlXCOj2t3n2GSYQgjePXLy0It9COIET?usp=sharing)
+### [Website](https://rutube-cold-start.vercel.app/)
 
 
 ## Run by yourself
