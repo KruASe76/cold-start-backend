@@ -43,7 +43,7 @@ services:
         container_name: kruase-ngrok
         image: ngrok/ngrok:alpine
         ports:
-            - "4040:4040"
+            - "4050:4040"
         environment:
             NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
         command: [ "http", "kruase-backend:8000", "--url=${NGROK_URL}" ]

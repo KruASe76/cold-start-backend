@@ -1,8 +1,9 @@
 from typing import Sequence
 from uuid import UUID
 
-from sqlalchemy import select, update, insert
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.dialects.postgresql import insert
 
 from misc import models, schemas
 
@@ -19,10 +20,9 @@ async def insert_default_interactions(
     db: AsyncSession, user_id: UUID, video_ids: list[UUID]
 ) -> None:
     statement = insert(models.Interaction).values(
-        [
-            {"user_id": user_id, "video_id": video_id} for video_id in video_ids
-        ]
+        [{"user_id": user_id, "video_id": video_id} for video_id in video_ids]
     )
+    statement = statement.on_conflict_do_nothing()
 
     await db.execute(statement)
     await db.commit()

@@ -70,7 +70,9 @@ async def recommendations(
     db: AsyncSession = Depends(get_db),
 ):
     interactions = await crud.get_user_interactions(db, user_id)
-    interaction_history = [(interaction.user_id, interaction.type) for interaction in interactions]
+    interaction_history = [
+        (interaction.video_id, interaction.type) for interaction in interactions
+    ]
 
     recommended_video_ids = await recommend_async(interaction_history, limit)
 
